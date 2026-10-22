@@ -613,8 +613,10 @@ export const PublicationsSection: React.FC = () => {
 
         .pub-footer {
           display: flex;
+          flex-wrap: wrap;
           align-items: center;
           justify-content: space-between;
+          gap: 0.5rem;
           padding-top: 0.75rem;
           border-top: 1px solid var(--color-border-subtle);
           font-size: 0.75rem;

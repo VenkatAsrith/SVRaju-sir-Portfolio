@@ -127,6 +127,7 @@ export const TeachingMentorshipSection: React.FC = () => {
 
         .card-badge-row {
           display: flex;
+          flex-wrap: wrap;
           gap: 0.5rem;
           margin-bottom: 1.25rem;
         }

@@ -134,7 +134,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ award, onClo
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem;
+          padding: clamp(0.75rem, 3vw, 1.5rem);
           animation: fadeIn 200ms ease;
         }
 
@@ -166,12 +166,13 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ award, onClo
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 1.25rem 1.75rem;
+          padding: 1rem clamp(1rem, 3vw, 1.75rem);
           border-bottom: 1px solid var(--color-border-subtle);
         }
 
         .modal-header-badge {
           display: flex;
+          flex-wrap: wrap;
           gap: 0.5rem;
         }
 
@@ -196,7 +197,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ award, onClo
         }
 
         .modal-body {
-          padding: 1.75rem;
+          padding: clamp(1rem, 3.5vw, 1.75rem);
         }
 
         .award-dossier-visual {

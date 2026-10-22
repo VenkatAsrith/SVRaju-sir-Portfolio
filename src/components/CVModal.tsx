@@ -302,6 +302,24 @@ export const CVModal: React.FC<CVModalProps> = ({ isOpen, onClose }) => {
           margin-bottom: 1rem;
         }
 
+        @media (max-width: 580px) {
+          .cv-header-grid {
+            flex-direction: column-reverse;
+            align-items: center;
+            text-align: center;
+          }
+          .cv-header-portrait {
+            margin-bottom: 0.5rem;
+          }
+          .cv-modal-bar {
+            padding: 0.75rem 1rem;
+          }
+          .cv-bar-actions {
+            width: 100%;
+            justify-content: flex-end;
+          }
+        }
+
         .cv-name {
           font-family: var(--font-display);
           font-size: 2.2rem;
