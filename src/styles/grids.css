@@ -1,0 +1,101 @@
+/* =========================================================================
+   Antigravity Reusable Grid System — 4 Standardized Variants
+   ========================================================================= */
+
+/* =========================================================================
+   GRID A — Editorial Feature Grid
+   Best for: Academic introduction, featured vision, major highlights
+   Asymmetric 1.65fr : 1fr on desktop, stacked on mobile
+   ========================================================================= */
+.grid-editorial-feature {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .grid-editorial-feature {
+    grid-template-columns: 1.65fr 1fr;
+  }
+}
+
+.grid-editorial-feature .grid-feature-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-editorial-feature .grid-feature-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+/* =========================================================================
+   GRID B — Balanced Two-Column Grid
+   Best for: Biography & qualifications, teaching, governance, outreach
+   Two balanced 1fr : 1fr columns on tablet/desktop, stacked on mobile
+   ========================================================================= */
+.grid-balanced-two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .grid-balanced-two-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================================================
+   GRID C — Three-Column Compact Grid
+   Best for: Publications, awards, books, research themes, metrics
+   3 columns on desktop, 2 on tablet, 1 on narrow mobile
+   ========================================================================= */
+.grid-three-col-compact {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .grid-three-col-compact {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1040px) {
+  .grid-three-col-compact {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =========================================================================
+   GRID D — Horizontal Archive / Gallery Grid
+   Best for: Event archives, historical milestones, photo collections
+   4 columns on wide screens, 2 on tablets, 1 on mobile
+   ========================================================================= */
+.grid-archive-timeline {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .grid-archive-timeline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-archive-timeline {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

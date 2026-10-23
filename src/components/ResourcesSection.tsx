@@ -1,6 +1,7 @@
 import React from 'react';
 import { EDUCATIONAL_RESOURCES } from '../data/academicData';
-import { BookOpen, FileText, Video, ExternalLink, BarChart3, ShieldCheck } from 'lucide-react';
+import { BookOpen, FileText, Video, ExternalLink, BarChart3 } from 'lucide-react';
+import { BalancedGrid } from './grids/GridSystem';
 
 export const ResourcesSection: React.FC = () => {
   const getResourceIcon = (type: string) => {
@@ -30,16 +31,15 @@ export const ResourcesSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="resources-grid">
+        <BalancedGrid className="resources-balanced-layout">
           {EDUCATIONAL_RESOURCES.map((res) => (
             <article key={res.id} className="resource-card">
               <div className="res-card-top">
                 <div className="res-icon-wrap">
                   {getResourceIcon(res.type)}
                 </div>
-                <span className="badge badge-verified">
-                  <ShieldCheck size={12} aria-hidden="true" />
-                  Verified Link
+                <span className="badge">
+                  {res.type}
                 </span>
               </div>
 
@@ -62,7 +62,7 @@ export const ResourcesSection: React.FC = () => {
               </div>
             </article>
           ))}
-        </div>
+        </BalancedGrid>
       </div>
 
       <style>{`

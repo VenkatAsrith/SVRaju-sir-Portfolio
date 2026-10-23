@@ -1,14 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PATENTS_DATA } from '../data/academicData';
 import { FileCheck, Shield, Sparkles, Calendar, CheckCircle } from 'lucide-react';
 
 export const PatentsSection: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<'All' | 'Biometrics' | 'Cloud & IoT' | 'Educational Technology' | 'Data Mining'>('All');
+  const [visiblePatents, setVisiblePatents] = useState<Set<string>>(new Set());
+  const patentRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   const filteredPatents = PATENTS_DATA.filter(patent => {
     if (categoryFilter === 'All') return true;
     return patent.category === categoryFilter;
   });
+
+  // Scroll Trigger Observer
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisiblePatents(new Set(filteredPatents.map(p => p.id)));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-id');
+            if (id) {
+              setVisiblePatents((prev) => new Set(prev).add(id));
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1
+      }
+    );
+
+    patentRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [filteredPatents]);
 
   return (
     <section id="patents" className="editorial-section" aria-label="Patents and Intellectual Property">
@@ -41,39 +77,52 @@ export const PatentsSection: React.FC = () => {
         </div>
 
         <div className="patents-grid">
-          {filteredPatents.map((patent) => (
-            <article key={patent.id} className="patent-card">
-              <div className="patent-card-top">
-                <span className="badge badge-verified">
-                  <CheckCircle size={12} aria-hidden="true" />
-                  {patent.status} · {patent.patentOffice}
-                </span>
-                <span className="patent-year">
-                  <Calendar size={12} aria-hidden="true" />
-                  {patent.year}
-                </span>
-              </div>
+          {filteredPatents.map((patent, idx) => {
+            const isLeft = idx % 2 === 0;
+            const isVisible = visiblePatents.has(patent.id);
+            const directionClass = isLeft ? 'enter-left' : 'enter-right';
 
-              <h3 className="patent-title">{patent.title}</h3>
-
-              {patent.applicationNumber && (
-                <div className="patent-reg-number">
-                  <span className="reg-label">App / Reg:</span>
-                  <code>{patent.applicationNumber}</code>
+            return (
+              <article
+                key={patent.id}
+                data-id={patent.id}
+                ref={(el) => {
+                  if (el) patentRefs.current.set(patent.id, el);
+                  else patentRefs.current.delete(patent.id);
+                }}
+                className={`patent-card ${directionClass} ${isVisible ? 'is-visible' : ''}`}
+              >
+                <div className="patent-card-top">
+                  <span className="badge">
+                    {patent.status} · {patent.patentOffice}
+                  </span>
+                  <span className="patent-year">
+                    <Calendar size={12} aria-hidden="true" />
+                    {patent.year}
+                  </span>
                 </div>
-              )}
 
-              <p className="patent-summary">{patent.summary}</p>
+                <h3 className="patent-title">{patent.title}</h3>
 
-              <div className="patent-footer">
-                <div className="patent-inventors">
-                  <span className="inventors-label">Inventors:</span>
-                  <span>{patent.inventors.join(', ')}</span>
+                {patent.applicationNumber && (
+                  <div className="patent-reg-number">
+                    <span className="reg-label">App / Reg:</span>
+                    <code>{patent.applicationNumber}</code>
+                  </div>
+                )}
+
+                <p className="patent-summary">{patent.summary}</p>
+
+                <div className="patent-footer">
+                  <div className="patent-inventors">
+                    <span className="inventors-label">Inventors:</span>
+                    <span>{patent.inventors.join(', ')}</span>
+                  </div>
+                  <span className="patent-cat-badge">{patent.category}</span>
                 </div>
-                <span className="patent-cat-badge">{patent.category}</span>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </div>
 
@@ -134,13 +183,39 @@ export const PatentsSection: React.FC = () => {
           padding: 1.75rem 1.65rem;
           display: flex;
           flex-direction: column;
-          transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+          opacity: 0;
+          transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      box-shadow var(--transition-normal),
+                      border-color var(--transition-normal);
+          will-change: opacity, transform;
+        }
+
+        .patent-card.enter-left {
+          transform: translateX(-32px);
+        }
+
+        .patent-card.enter-right {
+          transform: translateX(32px);
+        }
+
+        .patent-card.is-visible {
+          opacity: 1;
+          transform: translateX(0);
         }
 
         .patent-card:hover {
           transform: translateY(-2px);
           border-color: var(--color-violet-light);
           box-shadow: var(--shadow-md);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .patent-card {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
         }
 
         .patent-card-top {

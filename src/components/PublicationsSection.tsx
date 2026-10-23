@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PUBLICATIONS_DATA, PRINCIPAL_INFO } from '../data/academicData';
 import { Search, BookOpen, ExternalLink, Copy, Check, Filter, Calendar, Book } from 'lucide-react';
 import { PublicationItem } from '../types';
@@ -8,6 +8,8 @@ export const PublicationsSection: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [visiblePubs, setVisiblePubs] = useState<Set<string>>(new Set());
+  const pubRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   const filteredPublications = useMemo(() => {
     return PUBLICATIONS_DATA.filter((pub) => {
@@ -40,6 +42,40 @@ export const PublicationsSection: React.FC = () => {
       return true;
     });
   }, [searchQuery, selectedType, selectedCategory]);
+
+  // Scroll Trigger Observer for Left/Right Card Animations
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisiblePubs(new Set(filteredPublications.map(p => p.id)));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-id');
+            if (id) {
+              setVisiblePubs((prev) => new Set(prev).add(id));
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.08
+      }
+    );
+
+    pubRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [filteredPublications]);
 
   const copyCitation = (pub: PublicationItem) => {
     const citation = `${pub.authors.join(', ')} (${pub.year}). "${pub.title}." ${pub.venue}${pub.isbnOrIssn ? `, ${pub.isbnOrIssn}` : ''}.`;
@@ -214,18 +250,31 @@ export const PublicationsSection: React.FC = () => {
           </div>
         ) : (
           <div className="publications-list">
-            {filteredPublications.map((pub) => (
-              <article key={pub.id} className="pub-card">
-                <div className="pub-card-header">
-                  <div className="pub-badge-cluster">
-                    <span className="badge">{pub.type}</span>
-                    <span className="pub-cat-tag">{pub.category}</span>
+            {filteredPublications.map((pub, idx) => {
+              const isLeft = idx % 2 === 0;
+              const isVisible = visiblePubs.has(pub.id);
+              const directionClass = isLeft ? 'enter-left' : 'enter-right';
+
+              return (
+                <article
+                  key={pub.id}
+                  data-id={pub.id}
+                  ref={(el) => {
+                    if (el) pubRefs.current.set(pub.id, el);
+                    else pubRefs.current.delete(pub.id);
+                  }}
+                  className={`pub-card ${directionClass} ${isVisible ? 'is-visible' : ''}`}
+                >
+                  <div className="pub-card-header">
+                    <div className="pub-badge-cluster">
+                      <span className="badge">{pub.type}</span>
+                      <span className="pub-cat-tag">{pub.category}</span>
+                    </div>
+                    <span className="pub-year">
+                      <Calendar size={12} aria-hidden="true" />
+                      {pub.year}
+                    </span>
                   </div>
-                  <span className="pub-year">
-                    <Calendar size={12} aria-hidden="true" />
-                    {pub.year}
-                  </span>
-                </div>
 
                 <h3 className="pub-title">
                   {pub.url ? (
@@ -291,8 +340,9 @@ export const PublicationsSection: React.FC = () => {
                   )}
                 </div>
               </article>
-            ))}
-          </div>
+            );
+          })}
+        </div>
         )}
       </div>
 
@@ -512,22 +562,57 @@ export const PublicationsSection: React.FC = () => {
         }
 
         .publications-list {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: clamp(1.2rem, 2vw, 1.6rem);
+        }
+
+        @media (min-width: 820px) {
+          .publications-list {
+            grid-template-columns: repeat(2, 1fr);
+          }
         }
 
         .pub-card {
           background-color: #FFFFFF;
           border: 1px solid var(--color-border);
           border-radius: var(--radius-lg);
-          padding: 1.5rem 1.75rem;
-          transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+          padding: 1.6rem 1.75rem;
+          display: flex;
+          flex-direction: column;
+          opacity: 0;
+          transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      border-color var(--transition-normal),
+                      box-shadow var(--transition-normal);
+          will-change: opacity, transform;
+        }
+
+        .pub-card.enter-left {
+          transform: translateX(-34px);
+        }
+
+        .pub-card.enter-right {
+          transform: translateX(34px);
+        }
+
+        .pub-card.is-visible {
+          opacity: 1;
+          transform: translateX(0);
         }
 
         .pub-card:hover {
+          transform: translateY(-2px);
           border-color: var(--color-violet-light);
-          box-shadow: var(--shadow-sm);
+          box-shadow: var(--shadow-md);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .pub-card {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
         }
 
         .pub-card-header {

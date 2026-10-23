@@ -104,6 +104,17 @@
   --transition-normal: 260ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-smooth: 450ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: 700ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* =========================================================================
+     Documented Layering & Stacking Hierarchy
+     ========================================================================= */
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-sticky-header: 1000;
+  --z-dropdown: 2000;
+  --z-drawer: 3000;
+  --z-modal-backdrop: 99990;
+  --z-modal-dialog: 99999;
 }
 
 @media (prefers-reduced-motion: reduce) {

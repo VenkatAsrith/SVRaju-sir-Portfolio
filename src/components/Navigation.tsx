@@ -116,8 +116,9 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
               onClick={onOpenCV}
               aria-label="View Academic Curriculum Vitae Summary"
             >
-              <FileText size={15} aria-hidden="true" />
-              <span>Academic CV</span>
+              <FileText size={14} aria-hidden="true" />
+              <span className="btn-cv-text-full">Academic CV</span>
+              <span className="btn-cv-text-short">CV</span>
             </button>
 
             <button
@@ -126,8 +127,9 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              title={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -229,6 +231,8 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
           flex-direction: column;
           text-decoration: none;
           color: var(--color-text);
+          white-space: nowrap;
+          flex-shrink: 0;
         }
 
         .brand-title {
@@ -238,12 +242,20 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
           letter-spacing: 0.08em;
           color: var(--color-text);
           line-height: 1.2;
+          white-space: nowrap;
         }
 
         .brand-descriptor {
           font-size: 0.725rem;
           color: var(--color-text-secondary);
           letter-spacing: 0.02em;
+          white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+          .brand-descriptor {
+            display: none;
+          }
         }
 
         .nav-desktop {
@@ -289,6 +301,14 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
           border-radius: var(--radius-pill);
         }
 
+        .btn-cv-text-short {
+          display: none;
+        }
+
+        .btn-cv-text-full {
+          display: inline;
+        }
+
         .nav-actions {
           display: flex;
           align-items: center;
@@ -298,6 +318,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
         .btn-cv {
           padding: 0.55rem 1.15rem;
           font-size: 0.815rem;
+          white-space: nowrap;
         }
 
         .nav-mobile-toggle {
@@ -310,6 +331,65 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenCV }) => {
           padding: 8px;
           color: var(--color-text);
           cursor: pointer;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+          .nav-inner {
+            padding-left: 0.85rem !important;
+            padding-right: 0.85rem !important;
+            gap: 0.5rem;
+          }
+
+          .nav-brand {
+            min-width: 0;
+            flex-shrink: 1;
+            overflow: hidden;
+          }
+
+          .brand-title {
+            font-size: 0.825rem;
+            letter-spacing: 0.04em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .brand-descriptor {
+            display: none !important;
+          }
+
+          .nav-actions {
+            gap: 0.4rem;
+            flex-shrink: 0;
+          }
+
+          .btn-cv {
+            padding: 0.38rem 0.65rem;
+            font-size: 0.75rem;
+            gap: 4px;
+          }
+
+          .btn-cv-text-full {
+            display: none;
+          }
+
+          .btn-cv-text-short {
+            display: inline;
+          }
+
+          .nav-mobile-toggle {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(117, 99, 159, 0.08);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+          }
         }
 
         @media (min-width: 1024px) {

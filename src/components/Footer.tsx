@@ -77,22 +77,6 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Fact Verification Disclaimer Box */}
-        <div className="footer-verification-box">
-          <div className="verif-icon-col">
-            <ShieldCheck size={20} className="verif-shield" aria-hidden="true" />
-          </div>
-          <div>
-            <div className="verif-title">Factual Accuracy &amp; Institutional Provenance Notice</div>
-            <p className="verif-desc">
-              All credentials, designations, publications, patents, and awards presented on this academic legacy portal
-              are sourced directly from the official institutional records of JNTUH University College of Engineering Sultanpur,
-              Jawaharlal Nehru Technological University Hyderabad, the Indian Patent Office Journal, and Google Scholar.
-              Senior Professor (HAG) reflects Dr. Raju's official institutional advancement conferred in July 2020.
-            </p>
-          </div>
-        </div>
-
         {/* Bottom Bar */}
         <div className="footer-bottom-bar">
           <p className="footer-copy">
@@ -196,36 +180,6 @@ export const Footer: React.FC = () => {
 
         .footer-links-list a:hover {
           color: var(--color-dark-text);
-        }
-
-        .footer-verification-box {
-          background-color: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: var(--radius-lg);
-          padding: 1.5rem 1.75rem;
-          display: flex;
-          gap: 1rem;
-          margin-bottom: 2rem;
-        }
-
-        .verif-shield {
-          color: var(--color-lavender);
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-
-        .verif-title {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: var(--color-dark-text);
-          margin-bottom: 0.35rem;
-        }
-
-        .verif-desc {
-          font-size: 0.8rem;
-          color: var(--color-dark-text-secondary);
-          line-height: 1.6;
-          margin-bottom: 0;
         }
 
         .footer-bottom-bar {

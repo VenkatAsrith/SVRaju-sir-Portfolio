@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HONORS_AWARDS } from '../data/academicData';
 import { Award, ShieldCheck, ExternalLink, Calendar, Trophy } from 'lucide-react';
 import { AwardItem } from '../types';
+import { CompactGrid } from './grids/GridSystem';
 
 interface AwardsSectionProps {
   onSelectAward: (award: AwardItem) => void;
@@ -9,11 +10,47 @@ interface AwardsSectionProps {
 
 export const AwardsSection: React.FC<AwardsSectionProps> = ({ onSelectAward }) => {
   const [levelFilter, setLevelFilter] = useState<'All' | 'National' | 'State' | 'Research'>('All');
+  const [visibleAwards, setVisibleAwards] = useState<Set<string>>(new Set());
+  const awardRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   const filteredAwards = HONORS_AWARDS.filter(award => {
     if (levelFilter === 'All') return true;
     return award.level === levelFilter;
   });
+
+  // Scroll Trigger Observer
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisibleAwards(new Set(filteredAwards.map(a => a.id)));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-id');
+            if (id) {
+              setVisibleAwards((prev) => new Set(prev).add(id));
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1
+      }
+    );
+
+    awardRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [filteredAwards]);
 
   return (
     <section id="recognition" className="editorial-section" aria-label="Awards and Distinctions">
@@ -45,48 +82,62 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onSelectAward }) =
           </div>
         </div>
 
-        <div className="awards-grid">
-          {filteredAwards.map((award) => (
-            <article key={award.id} className="award-card">
-              <div className="award-card-top">
-                <div className="award-icon-badge">
-                  <Trophy size={18} aria-hidden="true" />
+        <CompactGrid className="awards-compact-layout">
+          {filteredAwards.map((award, idx) => {
+            const isLeft = idx % 2 === 0;
+            const isVisible = visibleAwards.has(award.id);
+            const directionClass = isLeft ? 'enter-left' : 'enter-right';
+
+            return (
+              <article
+                key={award.id}
+                data-id={award.id}
+                ref={(el) => {
+                  if (el) awardRefs.current.set(award.id, el);
+                  else awardRefs.current.delete(award.id);
+                }}
+                className={`award-card ${directionClass} ${isVisible ? 'is-visible' : ''}`}
+              >
+                <div className="award-card-top">
+                  <div className="award-icon-badge">
+                    <Trophy size={18} aria-hidden="true" />
+                  </div>
+                  <div className="award-badge-cluster">
+                    <span className={`badge ${award.level === 'National' ? 'badge-national' : ''}`}>
+                      {award.level}
+                    </span>
+                    <span className="award-year-tag">
+                      <Calendar size={11} aria-hidden="true" />
+                      {award.year}
+                    </span>
+                  </div>
                 </div>
-                <div className="award-badge-cluster">
-                  <span className={`badge ${award.level === 'National' ? 'badge-national' : ''}`}>
-                    {award.level}
-                  </span>
-                  <span className="award-year-tag">
-                    <Calendar size={11} aria-hidden="true" />
-                    {award.year}
-                  </span>
+
+                <h3 className="award-card-title">{award.title}</h3>
+                <div className="award-awarding-body">{award.awardingBody}</div>
+
+                <p className="award-description">{award.description}</p>
+
+                <div className="award-significance-box">
+                  <span className="significance-label">Significance:</span>
+                  <span className="significance-text">{award.significance}</span>
                 </div>
-              </div>
 
-              <h3 className="award-card-title">{award.title}</h3>
-              <div className="award-awarding-body">{award.awardingBody}</div>
-
-              <p className="award-description">{award.description}</p>
-
-              <div className="award-significance-box">
-                <span className="significance-label">Significance:</span>
-                <span className="significance-text">{award.significance}</span>
-              </div>
-
-              <div className="award-card-actions">
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-award-action"
-                  onClick={() => onSelectAward(award)}
-                  aria-label={`View Certificate and Verification Details for ${award.title}`}
-                >
-                  <ShieldCheck size={14} className="action-icon" aria-hidden="true" />
-                  <span>View Dossier &amp; Citation</span>
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="award-card-actions">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-award-action"
+                    onClick={() => onSelectAward(award)}
+                    aria-label={`View Certificate and Verification Details for ${award.title}`}
+                  >
+                    <ShieldCheck size={14} className="action-icon" aria-hidden="true" />
+                    <span>View Dossier &amp; Citation</span>
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </CompactGrid>
       </div>
 
       <style>{`
@@ -146,13 +197,41 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({ onSelectAward }) =
           padding: 1.85rem 1.75rem;
           display: flex;
           flex-direction: column;
-          transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+          position: relative;
+          overflow: hidden;
+          opacity: 0;
+          transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                      border-color var(--transition-normal),
+                      box-shadow var(--transition-normal);
+          will-change: opacity, transform;
+        }
+
+        .award-card.enter-left {
+          transform: translateX(-32px);
+        }
+
+        .award-card.enter-right {
+          transform: translateX(32px);
+        }
+
+        .award-card.is-visible {
+          opacity: 1;
+          transform: translateX(0);
         }
 
         .award-card:hover {
-          transform: translateY(-3px);
+          transform: translateY(-2px);
           border-color: var(--color-violet-light);
           box-shadow: var(--shadow-md);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .award-card {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
         }
 
         .award-card-top {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { IMPACT_METRICS } from '../data/academicData';
 import { ShieldCheck, Calendar } from 'lucide-react';
+import { CompactGrid } from './grids/GridSystem';
 
 export const MetricsSection: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ export const MetricsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="metrics-grid">
+        <CompactGrid className="metrics-compact-layout">
           {IMPACT_METRICS.map((metric) => (
             <div key={metric.id} className="metric-card">
               <div className="metric-header">
@@ -41,35 +42,12 @@ export const MetricsSection: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="metrics-provenance-box">
-          <p className="provenance-note">
-            <strong>Source Provenance:</strong> Figures verified from the official JNTUH University College of Engineering
-            Sultanpur Principal Dossier, JNTU Hyderabad Research Directorate, Google Scholar citation metrics, and the
-            Indian Patent Office Journal.
-          </p>
-        </div>
+        </CompactGrid>
       </div>
 
       <style>{`
-        .metrics-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: clamp(1.25rem, 2.5vw, 1.75rem);
+        .metrics-compact-layout {
           margin-bottom: var(--space-2xl);
-        }
-
-        @media (min-width: 600px) {
-          .metrics-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .metrics-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
         }
 
         .metric-card {
@@ -80,13 +58,18 @@ export const MetricsSection: React.FC = () => {
           display: flex;
           flex-direction: column;
           position: relative;
-          transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+          overflow: hidden;
+          transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-normal);
         }
 
         .metric-card:hover {
-          transform: translateY(-3px);
+          transform: translateY(-2px);
           border-color: var(--color-violet-light);
           box-shadow: var(--shadow-md);
+        }
+
+        .metric-card:hover .metric-value {
+          color: var(--color-violet);
         }
 
         .metric-header {
@@ -150,23 +133,6 @@ export const MetricsSection: React.FC = () => {
           align-items: center;
           gap: 4px;
           flex-shrink: 0;
-        }
-
-        .metrics-provenance-box {
-          background-color: var(--color-lavender-tint);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-          padding: 1rem 1.5rem;
-          max-width: 860px;
-          margin: 0 auto;
-          text-align: center;
-        }
-
-        .provenance-note {
-          font-size: 0.825rem;
-          color: var(--color-text-secondary);
-          margin-bottom: 0;
-          line-height: 1.6;
         }
       `}</style>
     </section>

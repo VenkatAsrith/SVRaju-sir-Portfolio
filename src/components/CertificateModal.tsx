@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Award, ShieldCheck, Calendar, Building, CheckCircle2 } from 'lucide-react';
+import { lockBackgroundScroll, unlockBackgroundScroll } from '../utils/scrollLock';
 import { AwardItem } from '../types';
 
 interface CertificateModalProps {
@@ -19,22 +21,24 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ award, onClo
     };
 
     if (award) {
-      document.body.style.overflow = 'hidden';
+      lockBackgroundScroll();
       window.addEventListener('keydown', handleKeyDown);
       setTimeout(() => closeButtonRef.current?.focus(), 50);
     } else {
-      document.body.style.overflow = '';
+      unlockBackgroundScroll();
     }
 
     return () => {
-      document.body.style.overflow = '';
+      if (award) {
+        unlockBackgroundScroll();
+      }
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [award, onClose]);
 
-  if (!award) return null;
+  if (!award || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div
       className="modal-backdrop"
       onClick={onClose}
@@ -318,6 +322,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ award, onClo
           color: #1E7E55;
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 };

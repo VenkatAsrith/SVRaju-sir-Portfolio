@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { HeroSection } from './components/HeroSection';
 import { MetricsSection } from './components/MetricsSection';
@@ -23,6 +23,36 @@ export const App: React.FC = () => {
   const [selectedAward, setSelectedAward] = useState<AwardItem | null>(null);
   const [isCVOpen, setIsCVOpen] = useState(false);
 
+  // Accessible, coordinated scroll reveal
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.section-header, .reveal-on-scroll').forEach((el) => {
+        el.classList.add('is-revealed');
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.section-header, .reveal-on-scroll').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="academic-legacy-app">
       {/* Accessibility Skip Link */}
@@ -35,7 +65,7 @@ export const App: React.FC = () => {
 
       {/* Continuous Scrolling Editorial Flow */}
       <main id="main-content">
-        <HeroSection />
+        <HeroSection onOpenCV={() => setIsCVOpen(true)} />
         <MetricsSection />
         <BiographySection />
         <TimelineSection />

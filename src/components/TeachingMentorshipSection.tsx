@@ -1,5 +1,6 @@
 import React from 'react';
-import { Users, GraduationCap, BookOpen, Award, CheckCircle } from 'lucide-react';
+import { Users, GraduationCap, Award } from 'lucide-react';
+import { EditorialFeatureGrid } from './grids/GridSystem';
 
 export const TeachingMentorshipSection: React.FC = () => {
   return (
@@ -19,74 +20,75 @@ export const TeachingMentorshipSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="mentorship-grid">
-          {/* Main Doctoral Supervision Showcase */}
-          <div className="mentorship-card highlight-card">
-            <div className="card-badge-row">
-              <span className="badge badge-verified">
-                <CheckCircle size={12} aria-hidden="true" />
-                Verified Supervision
-              </span>
-              <span className="badge">Research Directorate</span>
-            </div>
-
-            <div className="phd-stat-hero">
-              <span className="phd-num">17</span>
-              <div className="phd-stat-meta">
-                <div className="phd-title">Ph.D. Degrees Conferred</div>
-                <div className="phd-sub">Scholars successfully supervised to doctoral completion</div>
+        <EditorialFeatureGrid
+          main={
+            <div className="mentorship-card highlight-card">
+              <div className="card-badge-row">
+                <span className="badge">Research Directorate</span>
+                <span className="badge">Doctoral Program</span>
               </div>
-            </div>
 
-            <div className="ongoing-guidance-bar">
-              <Users size={16} className="bar-icon" aria-hidden="true" />
-              <span><strong>5 Active Doctoral Researchers</strong> currently guided in advanced AI, biometrics, and distributed data systems.</span>
-            </div>
+              <div className="phd-stat-hero">
+                <span className="phd-num">17</span>
+                <div className="phd-stat-meta">
+                  <div className="phd-title">Ph.D. Degrees Conferred</div>
+                  <div className="phd-sub">Scholars successfully supervised to doctoral completion</div>
+                </div>
+              </div>
 
-            <p className="mentorship-desc">
-              Doctoral research supervised under Dr. Raju spans fundamental algorithmic problems in
-              parallel pattern matching, multithreaded genomics sequencing, cancelable biometric templates,
-              and machine learning-driven clinical decision systems. His scholars now serve as professors,
-              research scientists, and technology executives across leading global universities and enterprises.
-            </p>
-          </div>
+              <div className="ongoing-guidance-bar">
+                <Users size={16} className="bar-icon" aria-hidden="true" />
+                <span><strong>5 Active Doctoral Researchers</strong> currently guided in advanced AI, biometrics, and distributed data systems.</span>
+              </div>
 
-          {/* Outcome-Based Curriculum Modernization */}
-          <div className="mentorship-card">
-            <div className="card-icon-header">
-              <GraduationCap size={22} className="card-icon" />
-              <h3 className="card-title">Outcome-Based Pedagogy &amp; NEP 2020</h3>
+              <p className="mentorship-desc">
+                Doctoral research supervised under Dr. Raju spans fundamental algorithmic problems in
+                parallel pattern matching, multithreaded genomics sequencing, cancelable biometric templates,
+                and machine learning-driven clinical decision systems. His scholars now serve as professors,
+                research scientists, and technology executives across leading global universities and enterprises.
+              </p>
             </div>
-            <p className="card-text">
-              Pioneered the practical transition from passive textbook delivery to measurable competency mastery.
-              Dr. Raju formulated systemic rubric attainment methodologies ensuring engineering graduates attain
-              critical thinking, complex problem-solving abilities, and ethical professional responsibility.
-            </p>
-            <ul className="mentorship-bullets">
-              <li>Direct and indirect assessment loops benchmarking student Course Outcomes (COs)</li>
-              <li>Credit restructuring and interdisciplinary electives aligned with NEP 2020 goals</li>
-              <li>Hands-on laboratory design prioritizing algorithmic implementation over rote syntax</li>
-            </ul>
-          </div>
+          }
+          side={
+            <>
+              {/* Outcome-Based Curriculum Modernization */}
+              <div className="mentorship-card">
+                <div className="card-icon-header">
+                  <GraduationCap size={22} className="card-icon" />
+                  <h3 className="card-title">Outcome-Based Pedagogy &amp; NEP 2020</h3>
+                </div>
+                <p className="card-text">
+                  Pioneered the practical transition from passive textbook delivery to measurable competency mastery.
+                  Dr. Raju formulated systemic rubric attainment methodologies ensuring engineering graduates attain
+                  critical thinking, complex problem-solving abilities, and ethical professional responsibility.
+                </p>
+                <ul className="mentorship-bullets">
+                  <li>Direct and indirect assessment loops benchmarking student Course Outcomes (COs)</li>
+                  <li>Credit restructuring and interdisciplinary electives aligned with NEP 2020 goals</li>
+                  <li>Hands-on laboratory design prioritizing algorithmic implementation over rote syntax</li>
+                </ul>
+              </div>
 
-          {/* Faculty Empowerment & Capacity Building */}
-          <div className="mentorship-card">
-            <div className="card-icon-header">
-              <Award size={22} className="card-icon" />
-              <h3 className="card-title">Faculty Development Leadership</h3>
-            </div>
-            <p className="card-text">
-              Recognizing that institutional excellence requires empowered educators, Dr. Raju has
-              trained thousands of college teachers as resource persons for NITTTR, AICTE ATAL academies,
-              and university Faculty Development Programmes (FDPs).
-            </p>
-            <ul className="mentorship-bullets">
-              <li>Conducted over 700 pedagogical masterclasses and accreditation seminars</li>
-              <li>UKIERI-certified leadership training applied to academic department head empowerment</li>
-              <li>Integration of SWAYAM-NPTEL MOOCs for faculty skill enhancement and career advancement</li>
-            </ul>
-          </div>
-        </div>
+              {/* Faculty Empowerment & Capacity Building */}
+              <div className="mentorship-card">
+                <div className="card-icon-header">
+                  <Award size={22} className="card-icon" />
+                  <h3 className="card-title">Faculty Development Leadership</h3>
+                </div>
+                <p className="card-text">
+                  Recognizing that institutional excellence requires empowered educators, Dr. Raju has
+                  trained thousands of college teachers as resource persons for NITTTR, AICTE ATAL academies,
+                  and university Faculty Development Programmes (FDPs).
+                </p>
+                <ul className="mentorship-bullets">
+                  <li>Conducted over 700 pedagogical masterclasses and accreditation seminars</li>
+                  <li>UKIERI-certified leadership training applied to academic department head empowerment</li>
+                  <li>Integration of SWAYAM-NPTEL MOOCs for faculty skill enhancement and career advancement</li>
+                </ul>
+              </div>
+            </>
+          }
+        />
       </div>
 
       <style>{`

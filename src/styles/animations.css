@@ -1,0 +1,63 @@
+/* =========================================================================
+   Coordinated Scroll Reveal & Stagger Animation System
+   Restrained, accessible, and non-blocking
+   ========================================================================= */
+
+/* Section Heading Reveal */
+.section-header {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.section-header.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-header .section-subtitle {
+  opacity: 0.92;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.08s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+/* Card & Element Scroll Reveal */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delay helpers for card groups */
+.stagger-items > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger-items > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger-items > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger-items > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger-items > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger-items > *:nth-child(6) { transition-delay: 0.34s; }
+
+/* Image reveal mask */
+.image-reveal-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-reveal-wrap img {
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Accessible fallback: respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .section-header,
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
